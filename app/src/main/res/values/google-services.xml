@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="default_web_client_id" translatable="false">53628743953-u05270s2od1es37b9pdrvmn10q6aa3iu.apps.googleusercontent.com</string>
-    <string name="gcm_defaultSenderId" translatable="false">53628743953</string>
-    <string name="google_api_key" translatable="false">AIzaSyDlBEXzi1_Kf0kY6cdxexhHfuxyrxx5ZB0</string>
-    <string name="google_app_id" translatable="false">1:53628743953:android:ef886035becf4f5adb1cb0</string>
-    <string name="google_crash_reporting_api_key" translatable="false">AIzaSyDlBEXzi1_Kf0kY6cdxexhHfuxyrxx5ZB0</string>
-    <string name="google_storage_bucket" translatable="false">reactmap-android.appspot.com</string>
-    <string name="project_id" translatable="false">reactmap-android</string>
+    <string name="default_web_client_id"          translatable="false">155122250142-icp4atur4p72h5bgv1hmr8lu1p526qhh.apps.googleusercontent.com</string>
+    <string name="firebase_database_url"          translatable="false">undefined</string>
+    <string name="gcm_defaultSenderId"            translatable="false">155122250142</string>
+    <string name="google_api_key"                 translatable="false">AIzaSyBpH33_6Av_Y0Vzeu62Bur9gA7yOPEQeLU</string>
+    <string name="google_app_id"                  translatable="false">1:155122250142:android:e562b5e98b58a06677268f</string>
+    <string name="google_crash_reporting_api_key" translatable="false">AIzaSyBpH33_6Av_Y0Vzeu62Bur9gA7yOPEQeLU</string>
+    <string name="google_storage_bucket"          translatable="false">pogofuerth-ef701.appspot.com</string>
+    <string name="project_id"                     translatable="false">pogofuerth-ef701</string>
 </resources>

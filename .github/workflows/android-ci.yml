@@ -57,7 +57,7 @@ jobs:
       
       - name: Build
         run: ./gradlew assembleRelease
-          -PKEYSTORE_FILE="../${{ /app/playstore.keystore.jks }}"
+          -PKEYSTORE_FILE="../app/keystore.jks"
           -PKEYSTORE_PASSWORD=${{ secrets.KEYSTORE_PASSWORD }}
           -PSIGNING_KEY_ALIAS=${{ secrets.KEY_ALIAS }}
           -PSIGNING_KEY_PASSWORD=${{ secrets.KEY_PASSWORD }}

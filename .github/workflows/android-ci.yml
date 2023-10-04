@@ -1,12 +1,17 @@
 # Workflow name
 name: Release App
 
-# When it will be triggered
+# When it will be triggered      
 on:
-  push:
-    branches:
-      - main
-
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Application version'
+        required: true
+        default: '1.0'
+  #push:
+  #  branches:
+  #    - master
 # Where it will run
 jobs:
   build:

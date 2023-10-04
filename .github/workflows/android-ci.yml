@@ -57,11 +57,11 @@ jobs:
       
       - name: Build
         run: |
-         ./gradlew assembleRelease \
-         -Pandroid.injected.signing.store.file="../${{ keystore.jks }}" \
-         -Pandroid.injected.signing.store.password=${{ secrets.KEY_PASSWORD }} \
-         -Pandroid.injected.signing.key.alias=${{ secrets.KEY_ALIAS }} \
-         -Pandroid.injected.signing.key.password=${{ secrets.KEY_PASSWORD }} \
+         ./gradlew assembleRelease 
+         -PKEYSTORE_FILE="../${{ ../keystore.jks }}"
+         -PKEYSTORE_PASSWORD=${{ secrets.KEYSTORE_PASSWORD }}
+         -PSIGNING_KEY_ALIAS=${{ secrets.KEY_ALIAS }}
+         -PSIGNING_KEY_PASSWORD=${{ secrets.KEY_PASSWORD }}
         
       - name: Release
         id: create_release

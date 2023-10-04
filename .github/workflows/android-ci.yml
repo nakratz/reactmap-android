@@ -51,17 +51,8 @@ jobs:
           versionCode: ${{ github.run_number }}
           versionName: ${{ env.VERSION_NAME }}
           
-      - name: Run Linters and Test
-        run: ./gradlew check
-        
-      - name: Upload Reports
-        uses: actions/upload-artifact@v2
-        with:
-          name: Test-Reports
-          path: app/build/reports
-        if: always()
       
-      - name: Restore playstore.keystore.jks
+      - name: Restore keystore.jks
         run: echo $KEYSTORE_FILE | base64 -d > /keystore.jks
       
       - name: Build

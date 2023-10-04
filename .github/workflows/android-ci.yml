@@ -56,12 +56,11 @@ jobs:
         run: echo $KEYSTORE_FILE | base64 -d > ../keystore.jks
       
       - name: Build
-        run: |
-         ./gradlew assembleRelease 
-         -PKEYSTORE_FILE="../${{ keystore.jks }}"
-         -PKEYSTORE_PASSWORD=${{ secrets.KEYSTORE_PASSWORD }}
-         -PSIGNING_KEY_ALIAS=${{ secrets.KEY_ALIAS }}
-         -PSIGNING_KEY_PASSWORD=${{ secrets.KEY_PASSWORD }}
+        run: ./gradlew assembleRelease
+          -PKEYSTORE_FILE="keystore.jks"
+          -PKEYSTORE_PASSWORD=${{ secrets.KEYSTORE_PASSWORD }}
+          -PSIGNING_KEY_ALIAS=${{ secrets.KEY_ALIAS }}
+          -PSIGNING_KEY_PASSWORD=${{ secrets.KEY_PASSWORD }}
         
       - name: Release
         id: create_release

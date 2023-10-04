@@ -53,11 +53,11 @@ jobs:
           
       
       - name: Restore keystore.jks
-        run: echo $KEYSTORE_FILE | base64 -d > /app/keystore.jks
+        run: echo $KEYSTORE_FILE | base64 -d > /home/runner/work/reactmap-android/reactmap-android/keystore.jks
       
       - name: Build
         run: ./gradlew assembleRelease
-          -PKEYSTORE_FILE="../app/keystore.jks"
+          -PKEYSTORE_FILE="/home/runner/work/reactmap-android/reactmap-android/keystore.jks"
           -PKEYSTORE_PASSWORD=${{ secrets.KEYSTORE_PASSWORD }}
           -PSIGNING_KEY_ALIAS=${{ secrets.KEY_ALIAS }}
           -PSIGNING_KEY_PASSWORD=${{ secrets.KEY_PASSWORD }}

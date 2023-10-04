@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Pogofuerth.de</string>
+    <string name="asset_statements" translatable="false">[{ \"include\": \"vip.pogofuerth.de/.well-known/assetlinks.json\" }]</string>
 </resources>

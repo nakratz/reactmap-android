@@ -56,13 +56,19 @@ jobs:
         run: echo $KEYSTORE_FILE | base64 -d > keystore.jks
       
       - name: Build
-        run: |
-         ./gradlew assembleRelease \
-         -Pandroid.injected.signing.store.file="../${{ keystore.jks }} \
-         -Pandroid.injected.signing.store.password=${{ secrets.KEYSTORE_PASSWORD }} \
-         -Pandroid.injected.signing.key.alias=${{ secrets.KEY_ALIAS }} \
-         -Pandroid.injected.signing.key.password=${{ secrets.KEY_PASSWORD }} \
-       
+        #run: |
+        # ./gradlew assembleRelease \
+        # -Pandroid.injected.signing.store.file="../${{ keystore.jks }} \
+        # -Pandroid.injected.signing.store.password=${{ secrets.KEYSTORE_PASSWORD }} \
+        # -Pandroid.injected.signing.key.alias=${{ secrets.KEY_ALIAS }} \
+        # -Pandroid.injected.signing.key.password=${{ secrets.KEY_PASSWORD }} \
+        
+        run: ./gradlew assembleRelease
+          -PKEYSTORE_FILE="../${{ keystore.jks }}"
+          -PKEYSTORE_PASSWORD=${{ secrets.KEYSTORE_PASSWORD }}
+          -PSIGNING_KEY_ALIAS=${{ secrets.KEY_ALIAS }}
+          -PSIGNING_KEY_PASSWORD=${{ secrets.KEY_PASSWORD }}
+        
       - name: Release
         id: create_release
         uses: actions/create-release@v1

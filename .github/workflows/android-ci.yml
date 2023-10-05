@@ -1,6 +1,9 @@
 # Workflow name
 name: Release App
 
+env:
+  main_project_module: app
+
 # When it will be triggered      
 on:
   workflow_dispatch:

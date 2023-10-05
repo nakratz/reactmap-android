@@ -87,6 +87,6 @@ jobs:
          name: Release v${{ github.event.inputs.version }}
          draft: false
          prerelease: false
-         files: reactmap-android/Reactmap_${{ github.event.inputs.version }}.apk
+         files: app/release/app-release.apk
    
  

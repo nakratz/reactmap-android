@@ -67,7 +67,7 @@ jobs:
         uses: actions/upload-artifact@v3.1.2
         with:
           name: reactmap-android
-          path: app/release/app-release.apk
+          path: /home/runner/work/reactmap-android/reactmap-android/app/release/app-release.apk
   release:
    name: Release APK
    needs: build
@@ -87,6 +87,6 @@ jobs:
          name: Release v${{ github.event.inputs.version }}
          draft: false
          prerelease: false
-         files: app/release/app-release.apk
+         files: /home/runner/work/reactmap-android/reactmap-android/app/release/app-release.apk
    
  

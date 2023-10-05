@@ -88,7 +88,7 @@ jobs:
      - name: Download APK from build
        uses: actions/download-artifact@v3.0.2
        with:
-         name: build
+         name: Reactmap-android
      
      - name: Create Release
        id: create_release

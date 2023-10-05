@@ -42,7 +42,7 @@ jobs:
         run: chmod +x ./gradlew
   
       - name: Generate App Version Name
-        run: echo "VERSION_NAME=$(git describe --tags | sed 's/\(.*\)-/\1./' | sed 's/\(.*\)-/\1+/')" >> $GITHUB_ENV
+        run: echo "VERSION_NAME=v${{ github.run_number }}" >> $GITHUB_ENV
       
       - name: Bump Version
         uses: chkfung/android-version-actions@v1.1
@@ -64,23 +64,29 @@ jobs:
           -PSIGNING_KEY_PASSWORD=${{ secrets.KEY_PASSWORD }}
 
       - name: Upload Artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3.1.2
         with:
-          name: Signed app bundle
-          path: ${{steps.sign_app.outputs.signedReleaseFile}}
-          retention-days: 4
-        
-      - name: Release
-        id: create_release
-        uses: actions/create-release@v1
-        with:
-          tag_name: ${{ github.run_number }}
-          release_name: Release v${{ github.run_number }}
-          draft: false
-          prerelease: false
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-
-    
+          name: reactmap-android
+          path: app/release/Reactmap_${{ github.event.inputs.version }}.apk
+  release:
+   name: Release APK
+   needs: build
+   runs-on: ubuntu-latest
+   steps:
+     - name: Download APK from build
+       uses: actions/download-artifact@v1
+       with:
+         name: reactmap-android
+     - name: Create Release
+       id: create_release
+       uses: softprops/action-gh-release@v1
+       env:
+         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+       with:
+         tag_name: v${{ github.event.inputs.version }}
+         name: Release v${{ github.event.inputs.version }}
+         draft: false
+         prerelease: false
+         files: reactmap-android/Reactmap_${{ github.event.inputs.version }}.apk
+   
  

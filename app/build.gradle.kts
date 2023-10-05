@@ -32,26 +32,26 @@ android {
         } else "null")
     }
 
-    /*signingConfigs {
+    signingConfigs {
         create("release") {
-            storeFile = file(project.property("KEYSTORE_FILE").toString())
-            storePassword = project.property("KEYSTORE_PASSWORD").toString()
-            keyAlias = project.property("SIGNING_KEY_ALIAS").toString()
-            keyPassword = project.property("SIGNING_KEY_PASSWORD").toString()
+            storeFile = file("../keystore.jks")
+            storePassword = System.getenv("KEYSTORE_PASSWORD")
+            keyAlias = System.getenv("SIGNING_KEY_ALIAS")
+            keyPassword = System.getenv("SIGNING_KEY_PASSWORD")
         }
-    }*/
+    }
 
     buildTypes {
         debug {
             isPseudoLocalesEnabled = true
         }
-        release {
+        getByName("release") {
             isMinifyEnabled = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
             if (!pluginManager.hasPlugin("com.google.gms.google-services")) {
                 the<CrashlyticsExtension>().mappingFileUploadEnabled = false
             }
-            // signingConfig = signingConfigs.getByName(name)
+            signingConfig = signingConfigs.getByName("release")
         }
     }
     buildFeatures.buildConfig = true

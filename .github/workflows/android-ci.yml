@@ -68,18 +68,21 @@ jobs:
         run: echo $KEYSTORE_FILE | base64 -d > /home/runner/work/reactmap-android/reactmap-android/keystore.jks
       
       - name: Build apk release project (APK) - ${{ env.main_project_module }} module
-        run: ./gradlew assembleRelease
-          -PKEYSTORE_FILE="/home/runner/work/reactmap-android/reactmap-android/keystore.jks"
-          -PKEYSTORE_PASSWORD=${{ secrets.KEYSTORE_PASSWORD }}
-          -PSIGNING_KEY_ALIAS=${{ secrets.KEY_ALIAS }}
-          -PSIGNING_KEY_PASSWORD=${{ secrets.KEY_PASSWORD }}
+        run: ./gradlew assembleRelease -x test
+        env:
+          SIGNING_KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          SIGNING_KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+          SIGNING_STORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+        #  -PKEYSTORE_FILE="/home/runner/work/reactmap-android/reactmap-android/keystore.jks"
+        #  -PKEYSTORE_PASSWORD=${{ secrets.KEYSTORE_PASSWORD }}
+        #  -PSIGNING_KEY_ALIAS=${{ secrets.KEY_ALIAS }}
+        #  -PSIGNING_KEY_PASSWORD=${{ secrets.KEY_PASSWORD }}
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v3
         with:
           name: Reactmap-android
-          #path: ${{ env.main_project_module }}/build/outputs/apk/release/
-          path: ${{ env.main_project_module }}/release/
+          path: ${{ env.main_project_module }}/build/outputs/apk/release/
   release:
    name: Release APK
    needs: build

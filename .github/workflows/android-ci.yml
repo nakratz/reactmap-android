@@ -56,11 +56,19 @@ jobs:
         run: echo $KEYSTORE_FILE | base64 -d > /home/runner/work/reactmap-android/reactmap-android/keystore.jks
       
       - name: Build
+        id: sign_app
         run: ./gradlew assembleRelease
           -PKEYSTORE_FILE="/home/runner/work/reactmap-android/reactmap-android/keystore.jks"
           -PKEYSTORE_PASSWORD=${{ secrets.KEYSTORE_PASSWORD }}
           -PSIGNING_KEY_ALIAS=${{ secrets.KEY_ALIAS }}
           -PSIGNING_KEY_PASSWORD=${{ secrets.KEY_PASSWORD }}
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: Signed app bundle
+          path: ${{steps.sign_app.outputs.signedReleaseFile}}
+          retention-days: 4
         
       - name: Release
         id: create_release

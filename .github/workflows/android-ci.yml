@@ -65,14 +65,14 @@ jobs:
           
       
       - name: Restore keystore.jks
-        run: echo $KEYSTORE_FILE | base64 -d > /home/runner/work/reactmap-android/reactmap-android/keystore.jks
+        run: echo $KEYSTORE_FILE | base64 -d > ${{ env.main_project_module }}/keystore.jks
       
       - name: Build apk release project (APK) - ${{ env.main_project_module }} module
-        run: ./gradlew assembleRelease
-          -PKEYSTORE_FILE="/home/runner/work/reactmap-android/reactmap-android/keystore.jks"
-          -PKEYSTORE_PASSWORD=${{ secrets.KEYSTORE_PASSWORD }}
-          -PSIGNING_KEY_ALIAS=${{ secrets.KEY_ALIAS }}
-          -PSIGNING_KEY_PASSWORD=${{ secrets.KEY_PASSWORD }}
+        run: ./gradlew assembleRelease \
+          -PKEYSTORE_FILE="${{ env.main_project_module }}/keystore.jks" \
+          -PKEYSTORE_PASSWORD=${{ secrets.KEYSTORE_PASSWORD }} \
+          -PSIGNING_KEY_ALIAS=${{ secrets.KEY_ALIAS }} \
+          -PSIGNING_KEY_PASSWORD=${{ secrets.KEY_PASSWORD }} \
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v3

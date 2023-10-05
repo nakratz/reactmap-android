@@ -66,27 +66,32 @@ jobs:
       - name: Upload Artifact
         uses: actions/upload-artifact@v3.1.2
         with:
-          name: reactmap-android
-          path: /home/runner/work/reactmap-android/reactmap-android/app/release/app-release.apk
+          name: apk
+          path: app/release/app-release.apk
   release:
    name: Release APK
-   needs: build
+   needs: apk
    runs-on: ubuntu-latest
    steps:
      - name: Download APK from build
-       uses: actions/download-artifact@v1
+       uses: actions/download-artifact@v3.0.2
        with:
-         name: reactmap-android
+         name: apk
      - name: Create Release
        id: create_release
-       uses: softprops/action-gh-release@v1
+       uses: actions/create-release@v1
        env:
          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
        with:
          tag_name: v${{ github.event.inputs.version }}
          name: Release v${{ github.event.inputs.version }}
-         draft: false
-         prerelease: false
-         files: /home/runner/work/reactmap-android/reactmap-android/app/release/app-release.apk
-   
- 
+      - name: Upload Release APK
+        id: upload_release_asset
+        uses: actions/upload-release-asset@v1.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: apk/app-release.apk
+          asset_name: reactmap.apk
+          asset_content_type: application/zip

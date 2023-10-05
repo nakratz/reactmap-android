@@ -17,6 +17,15 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+    
+      # Set Current Date As Env Variable
+      - name: Set current date as env variable
+        run: echo "date_today=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
+
+      # Set Repository Name As Env Variable
+      - name: Set repository name as env variable
+        run: echo "repository_name=$(echo '${{ github.repository }}' | awk -F '/' '{print $2}')" >> $GITHUB_ENV
+        
       - name: Fetch Sources
         uses: actions/checkout@v2
         
@@ -55,8 +64,7 @@ jobs:
       - name: Restore keystore.jks
         run: echo $KEYSTORE_FILE | base64 -d > /home/runner/work/reactmap-android/reactmap-android/keystore.jks
       
-      - name: Build
-        id: sign_app
+      - name: Build apk release project (APK) - ${{ env.main_project_module }} module
         run: ./gradlew assembleRelease
           -PKEYSTORE_FILE="/home/runner/work/reactmap-android/reactmap-android/keystore.jks"
           -PKEYSTORE_PASSWORD=${{ secrets.KEYSTORE_PASSWORD }}
@@ -64,7 +72,7 @@ jobs:
           -PSIGNING_KEY_PASSWORD=${{ secrets.KEY_PASSWORD }}
 
       - name: Upload Artifact
-        uses: actions/upload-artifact@v3.1.2
+        uses: actions/upload-artifact@v3
         with:
           name: build
           path: ${{ env.main_project_module }}/build/outputs/apk/release/
@@ -77,6 +85,7 @@ jobs:
        uses: actions/download-artifact@v3.0.2
        with:
          name: build
+     
      - name: Create Release
        id: create_release
        uses: actions/create-release@v1
@@ -85,6 +94,7 @@ jobs:
        with:
          tag_name: v${{ github.event.inputs.version }}
          name: Release v${{ github.event.inputs.version }}
+     
      - name: Upload Release APK
        id: upload_release_asset
        uses: actions/upload-release-asset@v1.0.1

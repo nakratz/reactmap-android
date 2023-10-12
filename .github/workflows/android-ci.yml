@@ -30,13 +30,13 @@ jobs:
         run: echo "repository_name=$(echo '${{ github.repository }}' | awk -F '/' '{print $2}')" >> $GITHUB_ENV
         
       - name: Fetch Sources
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         
       - name: Setup JDK
         uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
-          java-version: 11
+          java-version: 17
 
       - name: Setup Android SDK
         uses: android-actions/setup-android@v2

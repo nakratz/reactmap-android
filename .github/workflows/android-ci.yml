@@ -65,6 +65,9 @@ jobs:
       
       - name: Restore keystore.jks
         run: echo $KEYSTORE_FILE | base64 -d > /home/runner/work/reactmap-android/reactmap-android/keystore.jks
+
+      - name: Check if keystore is available
+        run: ls -a /home/runner/work/reactmap-android/reactmap-android/keystore.jks
       
       - name: Build apk release project (APK) - ${{ env.main_project_module }} module
         run: ./gradlew assembleRelease -Pandroid.injected.signing.store.file=/home/runner/work/reactmap-android/reactmap-android/keystore.jks -Pandroid.injected.signing.store.password=${{ secrets.KEYSTORE_PASSWORD }} -Pandroid.injected.signing.key.alias=${{ secrets.KEY_ALIAS }} -Pandroid.injected.signing.key.password=${{ secrets.KEY_PASSWORD }}

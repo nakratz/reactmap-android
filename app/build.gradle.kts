@@ -62,6 +62,7 @@ android {
     }
     kotlinOptions.jvmTarget = javaVersion.toString()
     packaging.resources.excludes += "/META-INF/{AL2.0,LGPL2.1}"
+    lint.informational.add("MissingTranslation")
 }
 
 dependencies {

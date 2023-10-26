@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">ReactMap</string>
+    <string name="app_name">Pogofuerth</string>
 
     <string name="notification_channel_site_controller">Full screen site controls</string>
     <string name="notification_channel_webhook_failed">Background location update failed</string>

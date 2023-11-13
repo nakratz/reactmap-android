@@ -22,6 +22,9 @@ jobs:
     - name: Restore keystore.jks
       run: echo $KEYSTORE_FILE | base64 -d > /home/runner/work/reactmap-android/reactmap-android/keystore.jks
 
+    - name: Make Gradlew executable
+      run: chmod +x ./gradlew
+
     - name: Build with Gradle
       run: ./gradlew assembleRelease
 
@@ -43,8 +46,4 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: Reactmap-android
-        path: ${{ env.main_project_module }}/build/outputs/apk/release/
-
-        # Create a release with the signed APK
-        #gh release create v1.0 /home/runner/work/reactmap-android/reactmap-android/build/outputs/apk/release/app-release.apk -t "Release v1.0" -n "Release v1.0"
-        
+        path: /home/runner/work/reactmap-android/reactmap-android/build/outputs/apk/release/

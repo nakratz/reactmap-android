@@ -31,7 +31,11 @@ jobs:
 
     - name: Make Gradlew executable
       run: chmod +x ./gradlew
-
+    
+    - name: Extract versionName from gradle.properties
+      id: extract_version
+      run: echo "::set-output name=version::$(grep 'reactmap.versionName' gradle.properties | cut -d'=' -f2 | tr -d '[:space:]')"
+    
     - name: Build with Gradle
       run: ./gradlew assembleRelease
 
@@ -48,3 +52,25 @@ jobs:
       with:
         name: Reactmap-android
         path: /home/runner/work/reactmap-android/reactmap-android/app/build/outputs/apk/release/app-release.apk
+
+    - name: Create GitHub Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: v${{ steps.extract_version.outputs.version }}
+        release_name: Release v${{ steps.extract_version.outputs.version }}
+        draft: false
+        prerelease: false
+
+    - name: Upload Artifact
+      id: upload-release-asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: /home/runner/work/reactmap-android/reactmap-android/app/build/outputs/apk/release/app-release.apk
+        asset_name: pogofuerth-v${{ steps.extract_version.outputs.version }}.apk
+        asset_content_type: application/octet-stream

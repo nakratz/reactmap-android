@@ -38,12 +38,13 @@ jobs:
     - name: Sign APK and create release
       run: |
         cd /home/runner/work/reactmap-android/reactmap-android/
-        ./gradlew assembleRelease
-        jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 \
-        -keystore keystore.jks \
-        -storepass ${{ secrets.KEYSTORE_PASSWORD }} \
-        -keypass ${{ secrets.KEY_PASSWORD }} \
-        app/build/outputs/apk/release/app-release-unsigned.apk ${{ secrets.KEY_ALIAS }}
+        ./gradlew assembleRelease -Pandroid.injected.signing.store.file=/home/runner/work/reactmap-android/reactmap-android/keystore.jks -Pandroid.injected.signing.store.password=${{ secrets.KEYSTORE_PASSWORD }} -Pandroid.injected.signing.key.alias=${{ secrets.KEY_ALIAS }} -Pandroid.injected.signing.key.password=${{ secrets.KEY_PASSWORD }}
+      
+        #jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 \
+        #-keystore keystore.jks \
+        #-storepass ${{ secrets.KEYSTORE_PASSWORD }} \
+        #-keypass ${{ secrets.KEY_PASSWORD }} \
+        #app/build/outputs/apk/release/app-release-unsigned.apk ${{ secrets.KEY_ALIAS }}
 
     - name: List APK directory - apk
       run: ls -R /home/runner/work/reactmap-android/reactmap-android/app/build/outputs/apk/

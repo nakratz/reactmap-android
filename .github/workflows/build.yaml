@@ -22,17 +22,15 @@ jobs:
     - name: Restore keystore.jks
       run: echo $KEYSTORE_FILE | base64 -d > /home/runner/work/reactmap-android/reactmap-android/keystore.jks
 
+    - name: Check if keystore is available
+      run: ls -a /home/runner/work/reactmap-android/reactmap-android/keystore.keystore
+
     - name: Make Gradlew executable
       run: chmod +x ./gradlew
 
     - name: Build with Gradle
       run: ./gradlew assembleRelease
 
-  release:
-    needs: build
-    runs-on: ubuntu-latest
-
-    steps:
     - name: Sign APK and create release
       run: |
         cd /home/runner/work/reactmap-android/reactmap-android/

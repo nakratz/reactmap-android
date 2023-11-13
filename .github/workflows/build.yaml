@@ -25,7 +25,8 @@ jobs:
       run: |
        keytool -genkey -v -keystore /home/runner/work/reactmap-android/reactmap-android/keystore.jks \
        -keyalg RSA -keysize 2048 -validity 10000 -alias ${{ secrets.KEY_ALIAS }} \
-       -storepass ${{ secrets.KEYSTORE_PASSWORD }} -keypass ${{ secrets.KEY_PASSWORD }}
+       -storepass ${{ secrets.KEYSTORE_PASSWORD }} -keypass ${{ secrets.KEY_PASSWORD }} \
+       -dname "CN=Aco, OU=Pogofuerth, O=Pogofuerth, L=DE, ST=BY, C=DE"
     
     - name: Check if keystore is available
       run: ls -a /home/runner/work/reactmap-android/reactmap-android/keystore.jks

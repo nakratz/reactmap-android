@@ -35,14 +35,14 @@ jobs:
     steps:
     - name: Sign APK and create release
       run: |
-        cd /home/runner/work/reactmap-android/
+        cd /home/runner/work/reactmap-android/reactmap-android/
         ls
         ./gradlew assembleRelease
         jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 \
-          -keystore /home/runner/work/reactmap-android/keystore.jks \
+          -keystore /home/runner/work/reactmap-android/reactmap-android/keystore.jks \
           -storepass ${{ secrets.KEYSTORE_PASSWORD }} \
           -keypass ${{ secrets.KEY_PASSWORD }} \
-          /home/runner/work/reactmap-android/build/outputs/apk/release/app-release.apk ${{ secrets.KEY_ALIAS }}
+          /home/runner/work/reactmap-android/reactmap-android/outputs/apk/release/app-release.apk ${{ secrets.KEY_ALIAS }}
 
     - name: Upload Artifact
       uses: actions/upload-artifact@v3

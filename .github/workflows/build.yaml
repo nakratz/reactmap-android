@@ -46,10 +46,10 @@ jobs:
           -keystore /home/runner/work/reactmap-android/reactmap-android/keystore.jks \
           -storepass ${{ secrets.KEYSTORE_PASSWORD }} \
           -keypass ${{ secrets.KEY_PASSWORD }} \
-          /home/runner/work/reactmap-android/reactmap-android/outputs/apk/release/app-release.apk ${{ secrets.KEY_ALIAS }}
+          /home/runner/work/reactmap-android/reactmap-android/app/release/app-release.apk ${{ secrets.KEY_ALIAS }}
 
     - name: Upload Artifact
       uses: actions/upload-artifact@v3
       with:
         name: Reactmap-android
-        path: /home/runner/work/reactmap-android/reactmap-android/build/outputs/apk/release/
+        path: /home/runner/work/reactmap-android/reactmap-android/app/release/app-release.apk

@@ -32,31 +32,21 @@ android {
         } else "null")
     }
 
-    signingConfigs {
-        create("release") {
-            storeFile = file("../keystore.jks")
-            storePassword = System.getenv("SIGNING_KEYSTORE_PASSWORD")
-            keyAlias = System.getenv("SIGNING_KEY_ALIAS")
-            keyPassword = System.getenv("SIGNING_KEY_PASSWORD")
-        }
-    }
-
     buildTypes {
         debug {
             isPseudoLocalesEnabled = true
         }
-        getByName("release") {
+        release {
             isMinifyEnabled = true
             vcsInfo.include = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
             if (!pluginManager.hasPlugin("com.google.gms.google-services")) {
                 the<CrashlyticsExtension>().mappingFileUploadEnabled = false
             }
-            signingConfig = signingConfigs.getByName("release")
         }
     }
     buildFeatures.buildConfig = true
-    val javaVersion = JavaVersion.VERSION_17
+    val javaVersion = JavaVersion.VERSION_11
     compileOptions {
         sourceCompatibility = javaVersion
         targetCompatibility = javaVersion

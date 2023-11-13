@@ -20,7 +20,7 @@ jobs:
         java-version: '17'
 
     - name: Restore keystore.jks
-      run: echo $KEYSTORE_FILE | base64 -d > /home/runner/work/reactmap-android/reactmap-android/keystore.keystore
+      run: echo $KEYSTORE_FILE | base64 -d > /home/runner/work/reactmap-android/reactmap-android/keystore.jks
 
     - name: Build with Gradle
       run: ./gradlew assembleRelease
@@ -34,7 +34,7 @@ jobs:
       run: |
         ./gradlew assembleRelease
         jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 \
-          -keystore /home/runner/work/reactmap-android/reactmap-android/keystore.keystore \
+          -keystore /home/runner/work/reactmap-android/reactmap-android/keystore.jks \
           -storepass ${{ secrets.KEYSTORE_PASSWORD }} \
           -keypass ${{ secrets.KEY_PASSWORD }} \
           /home/runner/work/reactmap-android/reactmap-android/build/outputs/apk/release/app-release.apk ${{ secrets.KEY_ALIAS }}

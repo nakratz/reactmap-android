@@ -1,0 +1,44 @@
+name: Build and Release APK
+
+on:
+  push:
+    branches:
+      - main # Change this to your main branch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up JDK
+      uses: actions/setup-java@v2
+      with:
+        distribution: 'adopt'
+        java-version: '11'
+
+    - name: Restore keystore.jks
+      run: echo $KEYSTORE_FILE | base64 -d > /home/runner/work/reactmap-android/reactmap-android/keystore.keystore
+
+    - name: Build with Gradle
+      run: ./gradlew assembleRelease
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Sign APK and create release
+      run: |
+        ./gradlew assembleRelease
+        jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 \
+          -keystore /home/runner/work/reactmap-android/reactmap-android/keystore.keystore \
+          -storepass ${{ secrets.KEYSTORE_PASSWORD }} \
+          -keypass ${{ secrets.KEY_PASSWORD }} \
+          /home/runner/work/reactmap-android/reactmap-android/build/outputs/apk/release/app-release.apk ${{ secrets.KEY_ALIAS }}
+
+        # Create a release with the signed APK
+        gh release create v1.0 /home/runner/work/reactmap-android/reactmap-android/build/outputs/apk/release/app-release.apk -t "Release v1.0" -n "Release v1.0"
+        

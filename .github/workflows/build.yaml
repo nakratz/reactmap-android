@@ -35,6 +35,7 @@ jobs:
     steps:
     - name: Sign APK and create release
       run: |
+        cd /home/runner/work/reactmap-android/reactmap-android
         ./gradlew assembleRelease
         jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 \
           -keystore /home/runner/work/reactmap-android/reactmap-android/keystore.jks \

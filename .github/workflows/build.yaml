@@ -98,3 +98,11 @@ jobs:
         asset_name: app-release.apk
         asset_content_type: application/octet-stream
       if: steps.check_release.outputs.release_exists == 'false'
+
+    - name: Send Discord webhook notification
+      if: steps.check_release.outputs.release_exists == 'false'
+      run: |
+        release_url="https://github.com/${{ github.repository }}/releases/tag/v${{ steps.extract_version.outputs.version }}"
+        curl -H "Content-Type: application/json" -X POST -d "{\"content\": \"New release v${{ steps.extract_version.outputs.version }} is available! [View Release]($release_url)\"}" ${{ secrets.DISCORD_WEBHOOK_URL }}
+      env:
+        DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}

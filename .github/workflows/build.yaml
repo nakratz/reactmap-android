@@ -33,7 +33,7 @@ jobs:
    #     -dname "CN=Aco, OU=Pogofuerth, O=Pogofuerth, L=DE, ST=BY, C=DE"
    
     - name: Restore keystore from secret
-      run: echo ${{ secrets.KEYSTORE_FILE }} | base64 -d > /home/runner/work/reactmap-android/reactmap-android/keystore.jks
+      run: echo "${{ secrets.KEYSTORE_FILE }}" | tr -d '\n' | base64 -d > /home/runner/work/reactmap-android/reactmap-android/keystore.jks
     
     - name: Check if keystore is available
       run: ls -a /home/runner/work/reactmap-android/reactmap-android/keystore.jks

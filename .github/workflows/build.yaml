@@ -66,28 +66,27 @@ jobs:
         name: Reactmap-android
         path: /home/runner/work/reactmap-android/reactmap-android/app/build/outputs/apk/release/app-release.apk
 
-    - name: Check if release already exists
-      id: check_release
-      run: |
-        tag=v${{ steps.extract_version.outputs.version }}
-        existing_release=$(curl -s -H "Authorization: Bearer $GITHUB_TOKEN" https://api.github.com/repos/${{ github.repository }}/releases/tags/$tag | jq -e .id)
-        if [ "$existing_release" == "null" ]; then
-          echo "::set-output name=release_exists::false"
-        else
-          echo "::set-output name=release_exists::true"
-        fi
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+ #   - name: Check if release already exists
+ #     id: check_release
+ #     run: |
+ #       tag=v${{ steps.extract_version.outputs.version }}
+ #       existing_release=$(curl -s -H "Authorization: Bearer $GITHUB_TOKEN" https://api.github.com/repos/${{ github.repository }}/releases/tags/$tag | jq -e .id)
+ #       if [ "$existing_release" == "null" ]; then
+ #         echo "::set-output name=release_exists::false"
+ #       else
+ #         echo "::set-output name=release_exists::true"
+ #       fi
+ #     env:
+ #       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Create GitHub Release
-      id: create_release
+  #    id: create_release
       uses: actions/create-release@v1
       with:
         tag_name: v${{ steps.extract_version.outputs.version }}
         release_name: v${{ steps.extract_version.outputs.version }}
         draft: false
         prerelease: false
-      if: steps.check_release.outputs.release_exists == 'false'
 
     - name: Upload Artifact
       id: upload-release-asset
@@ -97,10 +96,10 @@ jobs:
         asset_path: /home/runner/work/reactmap-android/reactmap-android/app/build/outputs/apk/release/app-release.apk
         asset_name: app-release.apk
         asset_content_type: application/octet-stream
-      if: steps.check_release.outputs.release_exists == 'false'
+     # if: steps.check_release.outputs.release_exists == 'false'
 
     - name: Send Discord webhook notification
-      if: steps.check_release.outputs.release_exists == 'false'
+      #if: steps.check_release.outputs.release_exists == 'false'
       run: |
         release_url="https://github.com/${{ github.repository }}/releases/tag/v${{ steps.extract_version.outputs.version }}"
         curl -H "Content-Type: application/json" -X POST -d "{\"content\": \"New release v${{ steps.extract_version.outputs.version }} is available! [View Release]($release_url)\"}" ${{ secrets.DISCORD_WEBHOOK_URL }}

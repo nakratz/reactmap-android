@@ -70,8 +70,8 @@ jobs:
       id: check_release
       run: |
         tag=v${{ steps.extract_version.outputs.version }}
-        existing_release=$(curl -s -H "Authorization: Bearer $GITHUB_TOKEN" https://api.github.com/repos/${{ github.repository }}/releases/tags/$tag)
-        if [ -z "$existing_release" ]; then
+        existing_release=$(curl -s -H "Authorization: Bearer $GITHUB_TOKEN" https://api.github.com/repos/${{ github.repository }}/releases/tags/$tag | jq -e .id)
+        if [ "$existing_release" == "null" ]; then
           echo "::set-output name=release_exists::false"
         else
           echo "::set-output name=release_exists::true"

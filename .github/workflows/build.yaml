@@ -45,8 +45,8 @@ jobs:
       id: extract_version
       run: echo "::set-output name=version::$(grep 'reactmap.versionName' gradle.properties | cut -d'=' -f2 | tr -d '[:space:]')"
     
-    - name: Build with Gradle
-      run: ./gradlew assembleRelease
+   # - name: Build with Gradle
+   #   run: ./gradlew assembleRelease
 
    # - name: Save Keystore as Artifact if not restored
    #   if: steps.restore_keystore.outputs.artifact_paths == ''

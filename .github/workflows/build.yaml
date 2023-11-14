@@ -19,18 +19,21 @@ jobs:
         distribution: 'adopt'
         java-version: '17'
 
-    - name: Restore keystore artifact if exists
-      id: restore_keystore
-      run: echo "Keystore exists" # This is a placeholder command, it won't affect the outcome
-      if: false
+   # - name: Restore keystore artifact if exists
+   #   id: restore_keystore
+   #   run: echo "Keystore exists" # This is a placeholder command, it won't affect the outcome
+   #   if: false
 
-    - name: Regenerate Keystore if not restored
-      if: steps.restore_keystore.outputs.return-value != 'Keystore exists'
-      run: |
-        keytool -genkey -v -keystore /home/runner/work/reactmap-android/reactmap-android/keystore.jks \
-        -keyalg RSA -keysize 2048 -validity 10000 -alias ${{ secrets.KEY_ALIAS }} \
-        -storepass ${{ secrets.KEYSTORE_PASSWORD }} -keypass ${{ secrets.KEY_PASSWORD }} \
-        -dname "CN=Aco, OU=Pogofuerth, O=Pogofuerth, L=DE, ST=BY, C=DE"
+   # - name: Regenerate Keystore if not restored
+   #   if: steps.restore_keystore.outputs.return-value != 'Keystore exists'
+   #   run: |
+   #     keytool -genkey -v -keystore /home/runner/work/reactmap-android/reactmap-android/keystore.jks \
+   #     -keyalg RSA -keysize 2048 -validity 10000 -alias ${{ secrets.KEY_ALIAS }} \
+   #     -storepass ${{ secrets.KEYSTORE_PASSWORD }} -keypass ${{ secrets.KEY_PASSWORD }} \
+   #     -dname "CN=Aco, OU=Pogofuerth, O=Pogofuerth, L=DE, ST=BY, C=DE"
+   
+    - name: Restore keystore from secret
+      run: echo ${{ secrets.KEYSTORE_FILE }} | base64 -d > /home/runner/work/reactmap-android/reactmap-android/keystore.jks
     
     - name: Check if keystore is available
       run: ls -a /home/runner/work/reactmap-android/reactmap-android/keystore.jks
@@ -45,12 +48,12 @@ jobs:
     - name: Build with Gradle
       run: ./gradlew assembleRelease
 
-    - name: Save Keystore as Artifact if not restored
-      if: steps.restore_keystore.outputs.artifact_paths == ''
-      uses: actions/upload-artifact@v2
-      with:
-        name: keystore
-        path: /home/runner/work/reactmap-android/reactmap-android/keystore.jks
+   # - name: Save Keystore as Artifact if not restored
+   #   if: steps.restore_keystore.outputs.artifact_paths == ''
+   #   uses: actions/upload-artifact@v2
+   #   with:
+   #     name: keystore
+   #     path: /home/runner/work/reactmap-android/reactmap-android/keystore.jks
 
     - name: Sign APK and create release
       run: |

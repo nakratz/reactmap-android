@@ -38,11 +38,13 @@ jobs:
         tag=v${{ steps.extract_version.outputs.version }}
         if curl --head --fail "https://api.github.com/repos/${{ github.repository }}/releases/tags/$tag"; then
           echo "Release already exists. Skipping release creation."
-          exit 0
+          echo "::set-output name=skip_release::true"
+        else
+          echo "::set-output name=skip_release::false"
         fi
 
     - name: Sign APK and create release
-      if: steps.check_release.outputs.exit_code == '0'
+      if: steps.check_release.outputs.skip_release == 'false'
       run: |
         cd /home/runner/work/reactmap-android/reactmap-android/
         ./gradlew assembleRelease -Pandroid.injected.signing.store.file=/home/runner/work/reactmap-android/reactmap-android/keystore.jks -Pandroid.injected.signing.store.password=${{ secrets.KEYSTORE_PASSWORD }} -Pandroid.injected.signing.key.alias=${{ secrets.KEY_ALIAS }} -Pandroid.injected.signing.key.password=${{ secrets.KEY_PASSWORD }}
@@ -51,15 +53,14 @@ jobs:
       run: ls -R /home/runner/work/reactmap-android/reactmap-android/app/build/outputs/apk/
       
     - name: Upload Artifact
-      if: steps.check_release.outputs.exit_code == '0'
+      if: steps.check_release.outputs.skip_release == 'false'
       uses: actions/upload-artifact@v3
       with:
         name: Reactmap-android
         path: /home/runner/work/reactmap-android/reactmap-android/app/build/outputs/apk/release/app-release.apk
 
     - name: Create GitHub Release
-      id: create_release
-      if: steps.check_release.outputs.exit_code == '0'
+      if: steps.check_release.outputs.skip_release == 'false'
       uses: actions/create-release@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -70,8 +71,7 @@ jobs:
         prerelease: false
 
     - name: Upload Artifact
-      id: upload-release-asset
-      if: steps.check_release.outputs.exit_code == '0'
+      if: steps.check_release.outputs.skip_release == 'false'
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -82,7 +82,7 @@ jobs:
         asset_content_type: application/octet-stream
 
     - name: Send Discord webhook notification
-      if: steps.check_release.outputs.exit_code == '0'
+      if: steps.check_release.outputs.skip_release == 'false'
       run: |
         release_url="https://github.com/${{ github.repository }}/releases/tag/v${{ steps.extract_version.outputs.version }}"
         curl -H "Content-Type: application/json" -X POST -d "{\"content\": \"New release v${{ steps.extract_version.outputs.version }} is available! [View Release]($release_url)\"}" ${{ secrets.DISCORD_WEBHOOK_URL }}

@@ -30,6 +30,7 @@ android {
         buildConfigField("String", "GITHUB_RELEASES", if (extra.has("reactmap.githubReleases")) {
             extra["reactmap.githubReleases"] as String
         } else "null")
+        resourceConfigurations.addAll(arrayOf("en-rUS", "pl"))
     }
 
     buildTypes {
@@ -38,6 +39,7 @@ android {
         }
         release {
             isMinifyEnabled = true
+            isShrinkResources = true
             vcsInfo.include = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
             if (!pluginManager.hasPlugin("com.google.gms.google-services")) {

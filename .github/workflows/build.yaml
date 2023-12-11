@@ -100,7 +100,7 @@ jobs:
         tag: v${{ steps.extract_version.outputs.version }}
 
     - name: Send Discord webhook notification
-      if: ${{secrets.DISCORD_WEBHOOK_URL}}
+      if: env.DISCORD_WEBHOOK_URL
       run: |
         release_url="https://github.com/${{ github.repository }}/releases/tag/v${{ env.VERSION_NAME }}"
         curl -H "Content-Type: application/json" -X POST -d "{\"content\": \"New release v${{ env.VERSION_NAME }} is available! [View Release]($release_url)\"}" ${{ secrets.DISCORD_WEBHOOK_URL }}

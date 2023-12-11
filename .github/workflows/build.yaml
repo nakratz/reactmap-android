@@ -41,10 +41,6 @@ jobs:
           echo "Missing APP_NAME secret"
           exit 1
         fi
-        if [ -z "${{ secrets.DISCORD_WEBHOOK_URL }}" ]; then
-          echo "Missing DISCORD_WEBHOOK_URL secret"
-          exit 1
-        fi
 
   build:
     needs: check_secrets
@@ -97,13 +93,14 @@ jobs:
     - name: Release with ncipollo/release-action
       uses: ncipollo/release-action@v1
       with:
-        artifacts: /home/runner/work/reactmap-android/reactmap-android/app/build/outputs/apk/release/${{ secrets.APP_NAME }}-v$${{ env.VERSION_NAME }}.apk
+        artifacts: /home/runner/work/reactmap-android/reactmap-android/app/build/outputs/apk/release/${{ secrets.APP_NAME }}-v${{ env.VERSION_NAME }}.apk
         token: ${{ secrets.GITHUB_TOKEN }}
         generateReleaseNotes: true
         skipIfReleaseExists: true
         tag: v${{ steps.extract_version.outputs.version }}
 
     - name: Send Discord webhook notification
+      if: ${{secrets.DISCORD_WEBHOOK_URL}}
       run: |
         release_url="https://github.com/${{ github.repository }}/releases/tag/v${{ env.VERSION_NAME }}"
         curl -H "Content-Type: application/json" -X POST -d "{\"content\": \"New release v${{ env.VERSION_NAME }} is available! [View Release]($release_url)\"}" ${{ secrets.DISCORD_WEBHOOK_URL }}

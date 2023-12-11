@@ -91,16 +91,17 @@ jobs:
 
 
     - name: Release with ncipollo/release-action
+      id: release
       uses: ncipollo/release-action@v1
       with:
         artifacts: /home/runner/work/reactmap-android/reactmap-android/app/build/outputs/apk/release/${{ secrets.APP_NAME }}-v${{ env.VERSION_NAME }}.apk
         token: ${{ secrets.GITHUB_TOKEN }}
         generateReleaseNotes: true
         skipIfReleaseExists: true
-        tag: v${{ steps.extract_version.outputs.version }}
+        tag: v${{ env.VERSION_NAME}}
 
     - name: Send Discord webhook notification
-      if: env.DISCORD_WEBHOOK_URL
+      if: env.DISCORD_WEBHOOK_URL && steps.release.outputs.release_created == 'true'
       run: |
         release_url="https://github.com/${{ github.repository }}/releases/tag/v${{ env.VERSION_NAME }}"
         curl -H "Content-Type: application/json" -X POST -d "{\"content\": \"New release v${{ env.VERSION_NAME }} is available! [View Release]($release_url)\"}" ${{ secrets.DISCORD_WEBHOOK_URL }}

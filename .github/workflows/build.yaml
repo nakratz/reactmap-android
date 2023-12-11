@@ -5,8 +5,49 @@ on:
     branches:
       - master # Change this to your main branch
 
+
 jobs:
+  check_secrets:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Check GitHub Secrets
+      run: |
+        if [ -z "${{ secrets.KEYSTORE_FILE }}" ]; then
+          echo "Missing KEYSTORE_FILE secret"
+          exit 1
+        fi
+        if [ -z "${{ secrets.KEYSTORE_PASSWORD }}" ]; then
+          echo "Missing KEYSTORE_PASSWORD secret"
+          exit 1
+        fi
+        if [ -z "${{ secrets.KEY_ALIAS }}" ]; then
+          echo "Missing KEY_ALIAS secret"
+          exit 1
+        fi
+        if [ -z "${{ secrets.KEY_PASSWORD }}" ]; then
+          echo "Missing KEY_PASSWORD secret"
+          exit 1
+        fi
+        if [ -z "${{ secrets.MAP_URL }}" ]; then
+          echo "Missing MAP_URL secret"
+          exit 1
+        fi
+        if [ -z "${{ secrets.GITHUB_TOKEN }}" ]; then
+          echo "Missing GITHUB_TOKEN secret"
+          exit 1
+        fi
+        if [ -z "${{ secrets.APP_NAME }}" ]; then
+          echo "Missing APP_NAME secret"
+          exit 1
+        fi
+        if [ -z "${{ secrets.DISCORD_WEBHOOK_URL }}" ]; then
+          echo "Missing DISCORD_WEBHOOK_URL secret"
+          exit 1
+        fi
+
   build:
+    needs: check_secrets
     runs-on: ubuntu-latest
 
     steps:
@@ -46,16 +87,16 @@ jobs:
         name: Reactmap-android
         path: /home/runner/work/reactmap-android/reactmap-android/app/build/outputs/apk/release/app-release.apk
 
-    - name: Create GitHub Release
-      id: create_release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: v${{ steps.extract_version.outputs.version }}
-        release_name: v${{ steps.extract_version.outputs.version }}
-        draft: false
-        prerelease: false
+ #   - name: Create GitHub Release
+ #     id: create_release
+ #     uses: actions/create-release@v1
+ #     env:
+ #       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+ #     with:
+ #       tag_name: v${{ steps.extract_version.outputs.version }}
+ #       release_name: v${{ steps.extract_version.outputs.version }}
+ #       draft: false
+ #       prerelease: false
 
     - name: Rename Artifact
       run: mv /home/runner/work/reactmap-android/reactmap-android/app/build/outputs/apk/release/app-release.apk /home/runner/work/reactmap-android/reactmap-android/app/build/outputs/apk/release/${{ secrets.APP_NAME }}-v${{ steps.extract_version.outputs.version }}.apk
@@ -68,6 +109,7 @@ jobs:
         token: ${{ secrets.GITHUB_TOKEN }}
         generateReleaseNotes: true
         skipIfReleaseExists: true
+        tag: v${{ steps.extract_version.outputs.version }}
 
     - name: Send Discord webhook notification
       run: |

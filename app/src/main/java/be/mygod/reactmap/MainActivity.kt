@@ -10,11 +10,11 @@ import android.system.Os
 import android.system.OsConstants
 import android.view.WindowManager
 import android.webkit.WebView
-import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.edit
+import androidx.core.content.res.use
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.commit
 import androidx.lifecycle.Lifecycle
@@ -28,6 +28,7 @@ import be.mygod.reactmap.util.UpdateChecker
 import be.mygod.reactmap.util.readableMessage
 import be.mygod.reactmap.webkit.ReactMapFragment
 import com.google.android.material.materialswitch.MaterialSwitch
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -174,7 +175,8 @@ class MainActivity : FragmentActivity() {
             } catch (e: Exception) {
                 Timber.w(e)
                 withContext(Dispatchers.Main) {
-                    Toast.makeText(this@MainActivity, e.readableMessage, Toast.LENGTH_LONG).show()
+                    Snackbar.make(currentFragment?.web ?: findViewById(android.R.id.content), e.readableMessage,
+                        Snackbar.LENGTH_LONG).show()
                 }
             }
         }

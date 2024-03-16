@@ -53,7 +53,8 @@ import java.util.Locale
 class ReactMapFragment : Fragment() {
     companion object {
         private val filenameExtractor = "filename=(\"([^\"]+)\"|[^;]+)".toRegex(RegexOption.IGNORE_CASE)
-        private val vendorJsMatcher = "/vendor-[0-9a-z]{8}\\.js".toRegex(RegexOption.IGNORE_CASE)
+        // https://github.com/rollup/rollup/blob/10bdaa325a94ca632ef052e929a3e256dc1c7ade/docs/configuration-options/index.md?plain=1#L876
+        private val vendorJsMatcher = "/vendor-[0-9a-z_-]{8}\\.js".toRegex(RegexOption.IGNORE_CASE)
         private val flyToMatcher = "/@/([0-9.-]+)/([0-9.-]+)(?:/([0-9.-]+))?/?".toRegex()
         private val mapHijacker = "(?<=[\\n\\r\\s,])this(?=.callInitHooks\\(\\)[,;][\\n\\r\\s]*this._zoomAnimated\\s*=)"
             .toPattern()
@@ -81,11 +82,10 @@ class ReactMapFragment : Fragment() {
         }
         pendingJson = null
     }
+    private var loaded = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         Timber.d("Creating ReactMapFragment")
-        val activeUrl = mainActivity.pendingOverrideUri?.toString() ?: app.activeUrl
-        hostname = (mainActivity.pendingOverrideUri ?: Uri.parse(activeUrl)).host!!
         web = WebView(mainActivity).apply {
             settings.apply {
                 domStorageEnabled = true
@@ -216,9 +216,17 @@ class ReactMapFragment : Fragment() {
                     groupValues[2].ifEmpty { groupValues[1] }
                 } ?: "settings.json"))
             }
-            loadUrl(activeUrl)
         }
         return web
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (loaded) return
+        loaded = true
+        val activeUrl = mainActivity.pendingOverrideUri?.toString() ?: app.activeUrl
+        hostname = (mainActivity.pendingOverrideUri ?: Uri.parse(activeUrl)).host!!
+        web.loadUrl(activeUrl)
     }
 
     private fun buildResponse(request: WebResourceRequest, transform: (Reader) -> String) = try {
@@ -299,7 +307,7 @@ class ReactMapFragment : Fragment() {
     }
 
     fun handleUri(uri: Uri?) = uri?.host?.let { host ->
-        if (view == null) return false
+        if (view == null || !loaded) return false
         Timber.d("Handling URI $uri")
         if (host != hostname) {
             hostname = host

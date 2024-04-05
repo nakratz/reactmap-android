@@ -41,6 +41,7 @@ jobs:
           echo "Missing APP_NAME secret"
           exit 1
         fi
+        echo "${{ secrets.DISCORD_WEBHOOK_URL }}"
 
   build:
     needs: check_secrets
